@@ -4,7 +4,7 @@ import axios from 'axios'
 const accessToken = 'demo_token'
 
 // api prefix
-export const baseURL = 'http://0.0.0.0:3000/'
+export const baseURL = process.env.NODE_ENV === 'production' ? 'http://39.106.49.124:8020/' : 'http://0.0.0.0:3000/'
 
 var server = axios.create({
   baseURL: baseURL,

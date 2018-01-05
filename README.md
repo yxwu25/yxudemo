@@ -11,7 +11,7 @@ npm install
 # serve mock data
 npm run mock
 
-# serve with hot reload at localhost:8080
+# open a new terminal
 npm run dev
 
 # build for production with minification

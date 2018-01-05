@@ -69,8 +69,8 @@ export default {
   },
   data () {
     return {
-      username: '',
-      password: ''
+      username: 'demo1',
+      password: '1'
     }
   },
   mounted () {
@@ -81,7 +81,7 @@ export default {
 
 <style lang="css" scoped>
 .login-container {
-
+  margin-top: 100px;
 }
 .login-form {
   width: 300px;

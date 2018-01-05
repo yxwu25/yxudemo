@@ -5,6 +5,12 @@
       "username": "demo1",
       "password": "1",
       "facebookUserId": ""
+    },
+    {
+      "id": 2,
+      "username": "demo2",
+      "password": "1",
+      "facebookUserId": ""
     }
   ],
   "albums": [
