@@ -7,10 +7,10 @@
       <div class="login-form-item">
         <input type="password" v-model="password" placeholder="password" />
       </div>
-      <button type="button" class="login-button" @click="login">
+      <button type="button" class="login-button" @click="doLogin">
         Login
       </button>
-      <button type="button" class="login-button facebook-login-button" @click="loginWithFacebook">
+      <button type="button" class="login-button facebook-login-button" @click="doLoginWithFacebook">
         Continue with Facebook
       </button>
     </div>
@@ -18,9 +18,13 @@
 </template>
 
 <script>
+
+import { mapActions } from 'vuex'
+
 export default {
   methods: {
-    login () {
+    ...mapActions(['login', 'loginWithFacebook']),
+    async doLogin () {
       if (!this.username.trim()) {
         window.alert('Plz enter username')
         return
@@ -29,25 +33,38 @@ export default {
         window.alert('Plz enter password')
         return
       }
-      this.$store.commit('setUser', {
-        username: this.username
-      })
+      try {
+        await this.login({
+          username: this.username
+        })
+      } catch (e) {
+        window.alert(e.message)
+      }
       this.$router.push('/account')
     },
-    loginWithFacebook () {
+    doLoginWithFacebook () {
       const loginParams = {
         scope: 'public_profile,email'
       }
       window.FB.login(response => {
         if (response.status === 'connected') {
+          const facebookUserId = response.authResponse.userID
           window.FB.api('/me', response => {
-            this.$store.commit('setUser', {
-              username: response.name
+            this.validFacebookUser({
+              username: response.name,
+              facebookUserId
             })
-            this.$router.push('/account')
           })
         }
       }, loginParams)
+    },
+    async validFacebookUser (data) {
+      try {
+        await this.loginWithFacebook(data)
+        this.$router.push('/account')
+      } catch (e) {
+        window.alert(e.message)
+      }
     }
   },
   data () {

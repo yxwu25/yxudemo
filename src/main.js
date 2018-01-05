@@ -1,50 +1,46 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
-import App from './App.vue'
+import storeDef from '@/store'
+import routerDef from '@/router'
+import token from '@/common/token'
+import * as mutationTypes from '@/store/mutationTypes'
+import apiUser from '@/api/user'
+import App from '@/App.vue'
 
 Vue.use(VueRouter)
 Vue.use(Vuex)
 
-const Home = () => import(
-  /* webpackChunkName: "home" */
-  './Home.vue'
-)
+// create router intance
+const router = new VueRouter(routerDef)
 
-const Login = () => import(
-  /* webpackChunkName: "login" */
-  './Login.vue'
-)
+// create vuex store intance
+const store = new Vuex.Store(storeDef)
 
-const Account = () => import(
-  /* webpackChunkName: "account" */
-  './Account.vue'
-)
+const tokenValue = token.getToken()
 
-const routes = [
-  { path: '/', component: Home },
-  { path: '/login', component: Login },
-  { path: '/account', component: Account }
-]
-
-const router = new VueRouter({
-  routes
-})
-
-const store = new Vuex.Store({
-  state: {
-    user: null
-  },
-  mutations: {
-    setUser (state, payload) {
-      state.user = payload
+async function startup() {
+  if (tokenValue) {
+    try {
+      const data = await apiUser.fetchUserInfoById(tokenValue)
+      store.commit(mutationTypes.USER_LOGIN_SUCCESS, data)
+    } catch (e) {
+      console.log(e)
+    } finally {
+      initApp()
     }
+  } else {
+    initApp()
   }
-})
+}
 
-new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
-})
+function initApp() {
+  new Vue({
+    el: '#app',
+    router,
+    store,
+    render: h => h(App)
+  })
+}
+
+startup()

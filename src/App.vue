@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <div class="nav-bar">
-      <router-link to="/account">My account</router-link>
+      <router-link active-class="active" to="/login" v-if="!currentUser">Login</router-link>
+      <a href="" @click="doLogout" v-if="currentUser">Logout</a>
+      <router-link active-class="active" to="/account" v-if="currentUser">My account</router-link>
+      <router-link active-class="active" to="/albums" v-if="currentUser">My albums</router-link>
       <router-link to="/">Home</router-link>
     </div>
     <div class="content">
@@ -11,17 +14,31 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import token from '@/common/token'
+
 export default {
-  name: 'app'
+  name: 'app',
+  computed: {
+    ...mapState({
+      currentUser: state => state.STORE_USER.user
+    })
+  },
+  methods: {
+    doLogout () {
+      token.setToken('')
+      this.$router.push('/login')
+    }
+  }
 }
 </script>
 
 <style>
-#app {
+body {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+  color: #174c82;
   font-size: 14px;
   padding: 0;
   margin: 0;
@@ -37,18 +54,39 @@ h1, h2 {
 
 .nav-bar {
   height: 50px;
-  padding: 0 15px;
-  margin-bottom: 100px;
+  border-bottom: solid 1px #dddddd;
 }
 
 .nav-bar > a {
   line-height: 50px;
+  padding: 0 20px;
   float: right;
-  margin-left: 15px;
   color: #888888;
+  text-decoration: none;
+}
+
+.nav-bar > a:hover {
+  color: #ffffff;
+  background-color: #a7c4e2;
+}
+
+.nav-bar > a.active {
+  color: #ffffff;
+  background-color: #5183b7;
 }
 
 .content {
+}
+
+.button {
+  display: block;
+  background: #fffff;
+  border: solid 1px #dddddd;
+  line-height: 2;
   text-align: center;
+  padding: 0 10px;
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
 }
 </style>

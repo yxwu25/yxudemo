@@ -15,4 +15,8 @@ export default {
 </script>
 
 <style lang="css">
+  .hello-text {
+    text-align: center;
+    margin-top: 100px;
+  }
 </style>
